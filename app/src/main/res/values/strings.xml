@@ -1,3 +1,22 @@
 <resources>
+
     <string name="app_name">GameTracker</string>
+
+    <string name="games_title">Мої ігри</string>
+    <string name="add_game_title">Додати гру</string>
+
+    <string name="game_title">Назва</string>
+    <string name="game_genre">Жанр</string>
+    <string name="game_description">Опис</string>
+
+    <string name="game_completed">Пройдено</string>
+
+    <string name="status_completed">Пройдено</string>
+    <string name="status_not_completed">Не пройдено</string>
+
+    <string name="save">Зберегти</string>
+    <string name="cancel">Скасувати</string>
+
+    <string name="empty_games">Ігор поки немає</string>
+
 </resources>

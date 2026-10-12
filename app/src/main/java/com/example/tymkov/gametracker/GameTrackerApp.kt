@@ -1,24 +1,21 @@
 package com.example.tymkov.gametracker
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.example.tymkov.gametracker.model.Game
-import com.example.tymkov.gametracker.ui.screens.AddGameForm
-import com.example.tymkov.gametracker.ui.screens.GameList
+import com.example.tymkov.gametracker.navigation.AddGameRoute
+import com.example.tymkov.gametracker.navigation.GameDetailsRoute
+import com.example.tymkov.gametracker.navigation.GameListRoute
+import com.example.tymkov.gametracker.ui.screens.AddGameScreen
+import com.example.tymkov.gametracker.ui.screens.GameDetailsScreen
+import com.example.tymkov.gametracker.ui.screens.GameListScreen
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameTrackerApp() {
 
@@ -32,6 +29,7 @@ fun GameTrackerApp() {
                     description = "Відкрита рольова гра у футуристичному світі Night City.",
                     isCompleted = true
                 ),
+
                 Game(
                     id = 2,
                     title = "The Witcher 3",
@@ -39,6 +37,7 @@ fun GameTrackerApp() {
                     description = "Пригодницька рольова гра у відкритому світі.",
                     isCompleted = true
                 ),
+
                 Game(
                     id = 3,
                     title = "Grand Theft Auto V",
@@ -50,75 +49,116 @@ fun GameTrackerApp() {
         )
     }
 
-    var showAddForm by remember {
-        mutableStateOf(false)
-    }
+    val backStack = rememberNavBackStack(
+        GameListRoute
+    )
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
+    NavDisplay(
+        backStack = backStack,
 
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = if (showAddForm) {
-                            stringResource(R.string.add_game_title)
-                        } else {
-                            stringResource(R.string.games_title)
-                        }
-                    )
-                }
-            )
+        onBack = {
+            backStack.removeLastOrNull()
         },
 
-        floatingActionButton = {
-            if (!showAddForm) {
-                FloatingActionButton(
-                    onClick = {
-                        showAddForm = true
+        entryProvider = entryProvider {
+
+            entry<GameListRoute> {
+
+                GameListScreen(
+                    games = games,
+
+                    onGameClick = { gameId ->
+
+                        backStack.add(
+                            GameDetailsRoute(
+                                gameId = gameId
+                            )
+                        )
+                    },
+
+                    onAddGame = {
+
+                        backStack.add(
+                            AddGameRoute
+                        )
                     }
-                ) {
-                    Text("+")
+                )
+            }
+
+            entry<AddGameRoute> {
+
+                AddGameScreen(
+
+                    onCancel = {
+                        backStack.removeLastOrNull()
+                    },
+
+                    onAddGame = {
+                            title,
+                            genre,
+                            description,
+                            isCompleted ->
+
+                        val nextId =
+                            (games.maxOfOrNull { it.id } ?: 0) + 1
+
+                        val newGame = Game(
+                            id = nextId,
+                            title = title,
+                            genre = genre,
+                            description = description,
+                            isCompleted = isCompleted
+                        )
+
+                        games = games + newGame
+
+                        backStack.removeLastOrNull()
+                    }
+                )
+            }
+
+            entry<GameDetailsRoute> { route ->
+
+                val game = games.find {
+                    it.id == route.gameId
                 }
+
+                GameDetailsScreen(
+                    game = game,
+
+                    onBack = {
+                        backStack.removeLastOrNull()
+                    },
+
+                    onToggleCompleted = {
+
+                        games = toggleGameCompleted(
+                            games = games,
+                            gameId = route.gameId
+                        )
+                    }
+                )
             }
         }
+    )
+}
 
-    ) { innerPadding ->
+private fun toggleGameCompleted(
+    games: List<Game>,
+    gameId: Int
+): List<Game> {
 
-        if (showAddForm) {
+    return games.map { game ->
 
-            AddGameForm(
-                modifier = Modifier.padding(innerPadding),
+        if (game.id == gameId) {
 
-                onCancel = {
-                    showAddForm = false
-                },
-
-                onAddGame = { title, genre, description, isCompleted ->
-
-                    val nextId =
-                        (games.maxOfOrNull { it.id } ?: 0) + 1
-
-                    val newGame = Game(
-                        id = nextId,
-                        title = title,
-                        genre = genre,
-                        description = description,
-                        isCompleted = isCompleted
-                    )
-
-                    games = games + newGame
-
-                    showAddForm = false
-                }
+            game.copy(
+                isCompleted = !game.isCompleted
             )
 
         } else {
 
-            GameList(
-                games = games,
-                modifier = Modifier.padding(innerPadding)
-            )
+            game
         }
     }
 }

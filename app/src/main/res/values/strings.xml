@@ -19,4 +19,11 @@
 
     <string name="empty_games">Ігор поки немає</string>
 
+    <string name="clear_form">Очистити форму</string>
+
+    <string name="game_not_found">Гру не знайдено</string>
+    <string name="back">Назад</string>
+    <string name="mark_completed">Позначити пройденою</string>
+    <string name="mark_not_completed">Позначити не пройденою</string>
+
 </resources>

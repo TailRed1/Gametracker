@@ -20,9 +20,11 @@ import com.example.tymkov.gametracker.ui.theme.GameTrackerTheme
 @Composable
 fun GameCard(
     game: Game,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
+        onClick = onClick,
         modifier = modifier.fillMaxWidth()
     ) {
         Column(
@@ -75,6 +77,7 @@ fun GameCardPreview() {
                 description = "Відкрита рольова гра у футуристичному світі Night City.",
                 isCompleted = true
             ),
+            onClick = {},
             modifier = Modifier.padding(8.dp)
         )
     }

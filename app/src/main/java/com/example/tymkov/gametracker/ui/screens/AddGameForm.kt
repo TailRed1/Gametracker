@@ -11,10 +11,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -23,30 +19,21 @@ import com.example.tymkov.gametracker.R
 
 @Composable
 fun AddGameForm(
-    onAddGame: (
-        title: String,
-        genre: String,
-        description: String?,
-        isCompleted: Boolean
-    ) -> Unit,
+    title: String,
+    genre: String,
+    description: String,
+    isCompleted: Boolean,
+
+    onTitleChange: (String) -> Unit,
+    onGenreChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    onCompletedChange: (Boolean) -> Unit,
+
+    onSave: () -> Unit,
     onCancel: () -> Unit,
+
     modifier: Modifier = Modifier
 ) {
-    var title by remember {
-        mutableStateOf("")
-    }
-
-    var genre by remember {
-        mutableStateOf("")
-    }
-
-    var description by remember {
-        mutableStateOf("")
-    }
-
-    var isCompleted by remember {
-        mutableStateOf(false)
-    }
 
     val isFormValid =
         title.isNotBlank() &&
@@ -61,9 +48,7 @@ fun AddGameForm(
 
         OutlinedTextField(
             value = title,
-            onValueChange = {
-                title = it
-            },
+            onValueChange = onTitleChange,
             label = {
                 Text(
                     text = stringResource(R.string.game_title)
@@ -75,9 +60,7 @@ fun AddGameForm(
 
         OutlinedTextField(
             value = genre,
-            onValueChange = {
-                genre = it
-            },
+            onValueChange = onGenreChange,
             label = {
                 Text(
                     text = stringResource(R.string.game_genre)
@@ -89,9 +72,7 @@ fun AddGameForm(
 
         OutlinedTextField(
             value = description,
-            onValueChange = {
-                description = it
-            },
+            onValueChange = onDescriptionChange,
             label = {
                 Text(
                     text = stringResource(R.string.game_description)
@@ -112,9 +93,7 @@ fun AddGameForm(
 
             Checkbox(
                 checked = isCompleted,
-                onCheckedChange = {
-                    isCompleted = it
-                }
+                onCheckedChange = onCompletedChange
             )
         }
 
@@ -131,16 +110,7 @@ fun AddGameForm(
             }
 
             Button(
-                onClick = {
-                    onAddGame(
-                        title.trim(),
-                        genre.trim(),
-                        description
-                            .trim()
-                            .takeIf { it.isNotEmpty() },
-                        isCompleted
-                    )
-                },
+                onClick = onSave,
                 enabled = isFormValid
             ) {
                 Text(

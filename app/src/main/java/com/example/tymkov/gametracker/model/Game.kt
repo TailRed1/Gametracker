@@ -5,5 +5,5 @@ data class Game(
     val title: String,
     val genre: String,
     val description: String?,
-    var isCompleted: Boolean
+    val isCompleted: Boolean
 )

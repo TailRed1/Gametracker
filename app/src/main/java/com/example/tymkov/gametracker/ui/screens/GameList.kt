@@ -19,6 +19,7 @@ import com.example.tymkov.gametracker.ui.components.GameCard
 @Composable
 fun GameList(
     games: List<Game>,
+    onGameClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -47,7 +48,10 @@ fun GameList(
             ) { game ->
 
                 GameCard(
-                    game = game
+                    game = game,
+                    onClick = {
+                        onGameClick(game.id)
+                    }
                 )
             }
         }

@@ -65,4 +65,7 @@ dependencies {
     implementation(libs.androidx.room3.runtime)
     ksp(libs.androidx.room3.compiler)
     implementation(libs.androidx.sqlite.framework)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.kotlinx.serialization)
+    implementation(libs.kotlinx.serialization.json)
 }

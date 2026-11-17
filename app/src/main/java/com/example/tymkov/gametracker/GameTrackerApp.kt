@@ -43,9 +43,10 @@ fun GameTrackerApp(
 
                 GameListScreen(
                     games = games,
+                    isLoading = uiState.isLoading,
+                    errorMessage = uiState.errorMessage,
 
                     onGameClick = { gameId ->
-
                         backStack.add(
                             GameDetailsRoute(
                                 gameId = gameId
@@ -54,10 +55,13 @@ fun GameTrackerApp(
                     },
 
                     onAddGame = {
-
                         backStack.add(
                             AddGameRoute
                         )
+                    },
+
+                    onRefresh = {
+                        gameViewModel.refreshGames()
                     }
                 )
             }
